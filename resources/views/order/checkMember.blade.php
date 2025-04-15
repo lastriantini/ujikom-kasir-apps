@@ -47,6 +47,7 @@
             <div class="card">
                 <div class="card-body">
                     <form action="#" method="post">
+                        
                         <div class="mb-3">
                             <label class="form-label">Nama Member (identitas)</label>
                             <input type="text" class="form-control" value="John Doe" name="name" placeholder="Masukkan nama">

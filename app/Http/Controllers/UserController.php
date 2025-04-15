@@ -26,6 +26,16 @@ class UserController extends Controller
         return view('user.index', compact('users'));
     }
 
+    public function login(Request $request)
+    {
+        $credentials = $request->only('email', 'password');
+
+        if (auth()->attempt($credentials)) {
+            return redirect()->route('dashboard')->with('success', 'Login successful.');
+        }
+
+        return redirect()->back()->withErrors(['email' => 'Invalid credentials.']);
+    }
 
     /**
      * Show the form for creating a new resource.

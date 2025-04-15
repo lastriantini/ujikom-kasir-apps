@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\DetailOrder;
+use App\Models\detailOrder;
 use Illuminate\Http\Request;
 
 class DetailOrderController extends Controller
@@ -34,7 +34,7 @@ class DetailOrderController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(DetailOrder $detailOrder)
+    public function show(detailOrder $detailOrder)
     {
         //
     }
@@ -42,7 +42,7 @@ class DetailOrderController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(DetailOrder $detailOrder)
+    public function edit(detailOrder $detailOrder)
     {
         //
     }
@@ -50,7 +50,7 @@ class DetailOrderController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, DetailOrder $detailOrder)
+    public function update(Request $request, detailOrder $detailOrder)
     {
         //
     }
@@ -58,7 +58,7 @@ class DetailOrderController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(DetailOrder $detailOrder)
+    public function destroy(detailOrder $detailOrder)
     {
         //
     }

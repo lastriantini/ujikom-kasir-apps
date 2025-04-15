@@ -14,7 +14,7 @@
                         href="{{ route('product.index') }}" aria-expanded="false"><i class="mdi mdi-cart"></i><span
                             class="hide-menu">Product</span></a></li>
                 <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link"
-                        href="" aria-expanded="false"><i
+                        href="{{ route('order.index') }}" aria-expanded="false"><i
                             class="mdi mdi-border-all"></i><span class="hide-menu">Pembelian</span></a></li>
                 {{-- {{-- @if ($user->role == 'admin') --}}
                 <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link"

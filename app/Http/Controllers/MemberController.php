@@ -4,62 +4,53 @@ namespace App\Http\Controllers;
 
 use App\Models\Member;
 use Illuminate\Http\Request;
+use App\Models\Product;
 
 class MemberController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        //
-    }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function checkMember(Request $request)
     {
-        //
-    }
+        $memberStatus = $request->member === 'member'; 
+        $phone = $request->phoneNumber;  
+        $orders = $request->cart_data;   
+        $totalPayment = $request->total_bayar;  
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
+        if ($memberStatus) {
+            $member = Member::where('no_telp', $phone)->first();
+            $isMember = !is_null($member); 
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Member $member)
-    {
-        //
-    }
+            $productIds = array_keys($orders);
+            $subTotal = 0;
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Member $member)
-    {
-        //
-    }
+            foreach ($orders as $index => &$order) {
+                $product = Product::find($order['id']);
+                $expectedSubtotal = $product->price * $order['quantity']; 
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Member $member)
-    {
-        //
-    }
+                if ((int)$order['subtotal'] !== $expectedSubtotal) {
+                    return response()->json(['error' => 'Data subtotal tidak valid'], 400);
+                }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Member $member)
-    {
-        //
+                $subTotal += $expectedSubtotal;
+
+                $order['product'] = $product;
+            }
+
+            $grandTotal = $subTotal;
+
+            $request->session()->put('order_data', $request->all());
+
+            return view('order.member', [
+                'isMember' => $isMember,
+                'member' => $member,
+                'grandTotal' => $grandTotal,
+                'subTotal' => $subTotal,
+                'orders' => $orders,
+                'phone' => $phone,
+                'totalPayment' => $totalPayment
+            ]);
+        }
+
+        return redirect()->route('order.store');
     }
 }

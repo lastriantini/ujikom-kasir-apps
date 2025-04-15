@@ -31,20 +31,23 @@
                             <img src="{{ asset('storage/' . $product->image) }}" alt="Product Image" class="img-fluid w-50">
                         </td>
                         <td class="text-center">{{ $product->name }}</td>
-                        <td class="text-center">Rp {{ number_format($product->price, 0, ',', '.') }}</td>
+                        <td class="text-center">Rp. {{ number_format($product->price, 0, ',', '.') }}</td>
                         <td class="text-center">{{ $product->stock }}</td>
                         <td class="text-center">
                             <div class="d-grid gap-4 d-md-flex justify-content-md-end">
-                                <a href="
+                                <a
+                                    href="
                         {{ route('product.edit', $product->id) }}
                         "><button
                                         type="button" class="btn btn-warning">Edit</button></a>
                                 <button class="btn btn-primary btn-update-stock" data-bs-toggle="modal"
-                                    data-bs-target="#updateStockModal" data-id="1" data-name="Nama Produk"
-                                    data-stock="50">
+                                    data    -bs-target="#updateStockModal" data-id={{ $product->id }}
+                                    data-name={{ $product->name }} data-stock={{ $product->stock }}>
                                     Update Stok
                                 </button>
-                                <form action="#" method="POST">
+                                <form action="{{ route('product.destroy', $product->id) }}" method="POST">
+                                    @csrf
+                                    @method('DELETE')
                                     <button class="btn btn-danger" type="submit">Hapus</button>
                                 </form>
                             </div>
@@ -69,15 +72,17 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form id="updateStockForm" method="POST">
+                    @csrf
+                    @method('PUT')
                     <div class="modal-body">
                         <input type="hidden" name="product_id" id="product_id">
                         <div class="mb-3">
                             <label for="product_name" class="form-label">Nama Produk</label>
-                            <input type="text" value="{{ $product->name }}" class="form-control" id="product_name" readonly>
+                            <input type="text" class="form-control" id="product_name" readonly>
                         </div>
                         <div class="mb-3">
                             <label for="stock" class="form-label">Stok Baru</label>
-                            <input type="number" class="form-control" value="{{ $product->stock }}" name="stock" id="stock" required>
+                            <input type="number" class="form-control" name="stock" id="stock" required>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -99,6 +104,7 @@
                 let productId = button.getAttribute("data-id");
                 let productName = button.getAttribute("data-name");
                 let productStock = button.getAttribute("data-stock");
+
 
                 document.getElementById("product_id").value = productId;
                 document.getElementById("product_name").value = productName;

@@ -4,10 +4,15 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\MemberController;
+use App\Http\Controllers\OrderController;
+use App\Models\Member;
 
 Route::get('/', function() {
     return view('dashboard');
 });
+
+Route::post('/login', [UserController::class, 'login'])->name('login.post');
+
 Route::get('/dashboard', function() {
     return view('dashboard');
 })->name('dashboard');
@@ -31,15 +36,28 @@ Route::prefix('product')->group(function(): void {
     Route::post('/store', [ProductController::class, 'store'])->name('product.store');
     Route::get('/{product}/edit', [ProductController::class, 'edit'])->name('product.edit');
     Route::put('/{product}', [ProductController::class, 'update'])->name('product.update');
-    // Route::delete('/{product}', [ProductController::class, 'destroy'])->name('product.destroy');
-    Route::post('/{product}/edit-stock', [ProductController::class, 'editStock'])->name('product.edit-stock');
+    Route::put('/{product}/edit-stock', [ProductController::class, 'editStock'])->name('product.edit-stock');
+    Route::delete('/{product}', [ProductController::class, 'destroy'])->name('product.destroy');
+    Route::get('/addProduct', [ProductController::class, 'addProduct'])->name('product.addProduct');
 });
 
-Route::prefix('member')->group(function(): void {
-    // Route::get('/data', [MemberController::class, 'index'])->name('member.index');
-    // Route::get('/create', [MemberController::class, 'create'])->name('member.create');
-    // Route::post('/store', [MemberController::class, 'store'])->name('member.store');
-    // Route::get('/{member}/edit', [MemberController::class, 'edit'])->name('member.edit');
-    // Route::put('/{member}', [MemberController::class, 'update'])->name('member.update');
-    // Route::delete('/{member}', [MemberController::class, 'destroy'])->name('member.destroy');
+Route::prefix('order')->name('order.')->group(function(): void {
+    Route::get('/data', [OrderController::class, 'index'])->name('index');
+    Route::get('/create', [OrderController::class, 'create'])->name('create');
+    Route::post('/review', [OrderController::class, 'review'])->name('review');
+    Route::get('/checkMember', [MemberController::class, 'checkMember'])->name('checkMember');
+    Route::post('/store', [OrderController::class, 'store'])->name('store');
 });
+
+// Route::get('/checkMember', function() {
+//     return view('order.checkMember');
+// })->name('checkMember');
+
+Route::get('/review', function() {
+    return view('order.review');
+})->name('review');
+
+Route::get('/create', function() {
+    return view('order.create');
+})->name('create');
+

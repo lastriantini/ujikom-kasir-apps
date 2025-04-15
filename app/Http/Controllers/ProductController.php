@@ -25,6 +25,13 @@ class ProductController extends Controller
 
         return view('product.index', compact('products'));
     }
+
+    public function addProduct() 
+    {
+        $products = Product::all();
+
+        return view('order.create', compact('products'));
+    }
     
     /**
      * Show the form for creating a new resource.
@@ -126,6 +133,8 @@ class ProductController extends Controller
      */
     public function destroy(Product $product)
     {
-        //
+        $product->delete();
+
+        return redirect()->route('product.index')->with('success', 'Product deleted successfully.');
     }
 }
