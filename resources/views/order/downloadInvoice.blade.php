@@ -59,11 +59,11 @@
 </head>
 
 <body>
-    <h1>Invoice - #2</h1>
+    <h1>Invoice - #{{ $order->id }}</h1>
     <p>Member Name : {{ $member->name }}</p>
-    <p>No. HP : {{ $member->phone_number }}</p>
+    <p>No. HP : {{ $member->no_telp }}</p>
     <p>Bergabung Sejak : {{ $member->created_at }}</p>
-    <p>Point Member : {{ $member->poin_member }}</p>
+    <p>Point Member : {{ $member->poin }}</p>
     <table>
         <thead>
             <tr>
@@ -74,31 +74,31 @@
             </tr>
         </thead>
         <tbody>
-            @foreach ($details as $item)
+            @foreach ($detailOrders as $item)
             <tr>
                 <td>{{ $item->product->name }}</td>
                 <td>Rp.{{ $item->product->price }}</td>
-                <td>{{ $item->qty }}</td>
-                <td>Rp.{{ $transaction->total_price }}</td>
+                <td>{{ $item->quantity }}</td>
+                <td>Rp.{{ $item->subtotal }}</td>
             </tr>
             @endforeach
         </tbody>
         <tfoot>
             <tr>
-                <th colspan="3">Poin Member</th>
-                <td>{{ $member->poin_member }}</td>
+                <th colspan="3">Poin Terpakai</th>
+                <td>{{ $member->poin }}</td>
             </tr>
             <tr>
                 <th colspan="3">Tunai</th>
-                <td>Rp.{{ $transaction->total_price }}</td>
+                <td>Rp.{{ $order->total_pay }}</td>
             </tr>
             <tr>
                 <th colspan="3">Kembalian</th>
-                <td>Rp.{{ $transaction->total_price }}</td>
+                <td>Rp.{{ $order->total_return }}</td>
             </tr>
             <tr>
                 <th colspan="3">Total</th>
-                <td>Rp.{{ $transaction->total_price }}</td>
+                <td>Rp.{{ $order->total_price }}</td>
             </tr>
         </tfoot>
     </table>
@@ -107,9 +107,9 @@
     </div>
     <hr>
     <address>
-        AlfaMarch<br>
-        Alamat: Jalan Raya Kolonel Bustomu<br>
-        Email: alfamarch@gmail.com
+        TokoBuku<br>
+        Alamat: Jalan Raya tajur<br>
+        Email: TokoBuku@gmail.com
     </address>
 </body>
 

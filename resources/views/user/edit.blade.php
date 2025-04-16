@@ -41,7 +41,7 @@
                     <select value="{{ $user->role }}" class="form-select form-control" id="role" name="role">
                         <option selected disabled>Pilih Role</option>
                         <option value="admin">Admin</option>
-                        <option value="kasir">Kasir</option>
+                        <option value="staff">Staff</option>
                     </select>
                     @error('role')
                         <div class="text-danger">{{ $message }}</div>
@@ -58,4 +58,15 @@
         </form>
     </div>
 </div>
+<script>
+    const roleSelect = document.getElementById('role');
+
+    // Log saat halaman dimuat (default value)
+    console.log("Default role:", roleSelect.value);
+
+    // Log setiap kali user ganti nilai
+    roleSelect.addEventListener('change', function() {
+        console.log("Selected role:", this.value);
+    });
+</script>
 @endsection

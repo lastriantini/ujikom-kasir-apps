@@ -13,14 +13,12 @@
             <h3 class="text-center mb-4">Login</h3>
 
             <!-- Flash message jika login gagal -->
-            @if(session('error'))
-                <div class="alert alert-danger">
-                    {{ session('error') }}
-                </div>
+            @if (Session::get('failed'))
+                <div class="text-red-600 text-sm text-center">{{ Session::get('failed') }}</div>
             @endif
 
             <!-- Form login -->
-            <form action="{{ route('login') }}" method="POST">
+            <form action="{{ route('loginAuth') }}" method="POST">
                 @csrf
                 <div class="mb-3">
                     <label for="email" class="form-label">Email</label>

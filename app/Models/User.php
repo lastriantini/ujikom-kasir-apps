@@ -17,10 +17,12 @@ class User extends Authenticatable
      *
      * @var list<string>
      */
+    
     protected $fillable = [
         'name',
         'email',
         'password',
+        'role',
     ];
 
     /**
@@ -47,7 +49,7 @@ class User extends Authenticatable
     }
 
 
-    public function Orders()
+    public function Order()
     {
         return $this->hasMany(Order::class);
     }

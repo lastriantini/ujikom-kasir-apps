@@ -11,46 +11,53 @@ class MemberController extends Controller
 
     public function checkMember(Request $request)
     {
-        $memberStatus = $request->member === 'member'; 
-        $phone = $request->phoneNumber;  
-        $orders = $request->cart_data;   
-        $totalPayment = $request->total_bayar;  
-
-        if ($memberStatus) {
-            $member = Member::where('no_telp', $phone)->first();
-            $isMember = !is_null($member); 
-
-            $productIds = array_keys($orders);
-            $subTotal = 0;
-
-            foreach ($orders as $index => &$order) {
-                $product = Product::find($order['id']);
-                $expectedSubtotal = $product->price * $order['quantity']; 
-
-                if ((int)$order['subtotal'] !== $expectedSubtotal) {
-                    return response()->json(['error' => 'Data subtotal tidak valid'], 400);
-                }
-
-                $subTotal += $expectedSubtotal;
-
-                $order['product'] = $product;
-            }
-
-            $grandTotal = $subTotal;
-
-            $request->session()->put('order_data', $request->all());
-
-            return view('order.member', [
-                'isMember' => $isMember,
-                'member' => $member,
-                'grandTotal' => $grandTotal,
-                'subTotal' => $subTotal,
-                'orders' => $orders,
-                'phone' => $phone,
-                'totalPayment' => $totalPayment
-            ]);
+        if ($request->member !== 'member') {
+            return redirect()->route('order.store');
         }
 
-        return redirect()->route('order.store');
+        $phone = $request->phone;
+        // dd($phone);
+        $orders = json_decode($request->cart_data, true);
+        $totalPayment = $request->total_bayar;
+        $member_status = $request->member;  
+
+        // dd($member_status);
+
+
+        if (!is_array($orders)) {
+            return back()->withErrors(['cart_data' => 'Data produk tidak valid.']);
+        }
+
+        $member = Member::where('no_telp', $phone)->first();
+        $isMember = !is_null($member);
+
+        $subTotal = 0;
+
+        foreach ($orders as $index => $order) {
+            $product = Product::find($order['id']);
+            if (!$product) continue;
+        
+            $expectedSubtotal = $product->price * $order['quantity'];
+        
+            if ((int)$order['subtotal'] !== $expectedSubtotal) {
+                return response()->json(['error' => 'Subtotal tidak sesuai'], 400);
+            }
+        
+            $subTotal += $expectedSubtotal;
+            $orders[$index]['product'] = $product;
+        }
+
+        $grandTotal = $subTotal;
+
+        $request->session()->put('order_data', [
+            'orders' => $orders,
+            'member' => $member,
+            'total' => $grandTotal
+        ]);
+
+        return view('order.checkMember', compact(
+            'isMember', 'member', 'grandTotal', 'subTotal', 'orders', 'phone', 'totalPayment', 'member_status'
+        ));
     }
+
 }

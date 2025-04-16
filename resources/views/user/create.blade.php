@@ -41,7 +41,7 @@
                     <select class="form-select @error('role') is-invalid @enderror" id="role" name="role">
                         <option selected disabled>Pilih Role</option>
                         <option value="admin" {{ old('role') == 'admin' ? 'selected' : '' }}>Admin</option>
-                        <option value="cashier" {{ old('role') == 'cashier' ? 'selected' : '' }}>Kasir</option>
+                        <option value="staff" {{ old('role') == 'cashier' ? 'selected' : '' }}>Staff</option>
                     </select>
                     @error('role')
                         <div class="text-danger">{{ $message }}</div>

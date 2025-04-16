@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
@@ -26,12 +27,21 @@ class UserController extends Controller
         return view('user.index', compact('users'));
     }
 
-    public function login(Request $request)
+    public function loginAuth(Request $request)
     {
-        $credentials = $request->only('email', 'password');
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required',
+        ]);
 
-        if (auth()->attempt($credentials)) {
-            return redirect()->route('dashboard')->with('success', 'Login successful.');
+        // dd($request);
+    
+        $credentials = $request->only(['email', 'password']);
+
+        if (Auth::attempt($credentials)) {
+            return redirect('/dashboard');
+        } else {
+            return redirect()->back()->with('failed', 'Email and password do not match. Please try again!');
         }
 
         return redirect()->back()->withErrors(['email' => 'Invalid credentials.']);
@@ -59,11 +69,13 @@ class UserController extends Controller
             'name' => 'required',
             'email' => 'required|email|unique:users',
             'password' => 'required|min:6|confirmed',
+            'role' => 'required'
         ]);
 
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
+            'role' => $request->role,
             'password' => Hash::make($request->password),
         ]);
         return redirect()->route('user.index')->with('success', 'User created successfully.');
@@ -95,11 +107,14 @@ class UserController extends Controller
     {
         $userData = User::find($user->id);
         
-        $password = $request->input('password')? $userData->password : $request->input('password');
+        $password = $request->input('password') ? $request->input('password') : $userData->password;
+
+        // dd($password);
         
         if ($request->filled('password')) {
             $password = Hash::make($request->password);
         }
+
         
         $request->validate([
             'name' => 'required',
@@ -107,13 +122,15 @@ class UserController extends Controller
             'password' => 'nullable|min:6',
             'role' => 'required',
         ]);
-
+        
         $user ->update([
             'name' => $request->name,
             'email' => $request->email,
             'role' => $request->role,
             'password' => $password,
         ]);
+        
+        // dd($user);
 
         return redirect()->route('user.index')->with('success', 'User updated successfully.');
     }
@@ -125,6 +142,16 @@ class UserController extends Controller
     {
         $user->delete();
         return redirect()->route('user.index')->with('success', 'User deleted successfully.');
+    }
+
+    public function logout(Request $request)
+    {
+        Auth::logout(); 
+
+        $request->session()->invalidate();
+        $request->session()->regenerateToken(); 
+
+        return redirect('/');
     }
     
 }

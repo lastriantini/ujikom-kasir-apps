@@ -6,20 +6,24 @@
 @section('content')
     <div class="container">
         <div class="d-flex justify-content-between align-items-center mb-3">
-            <div>
-                <button class="btn btn-primary">
-                    <a href="#" class="text-white">Export Penjualan (.xlsx)</a>
-                </button>
-            </div>
-            <div>
-                <a class="btn btn-success" href="
+            @if (auth()->check() && auth()->user()->role === 'admin')
+                <div>
+                    <button class="btn btn-primary">
+                        <a href="#" class="text-white">Export Penjualan (.xlsx)</a>
+                    </button>
+                </div>
+            @endif
+            @if (auth()->check() && auth()->user()->role === 'staff')
+                <div class="ml-auto">
+                    <a class="btn btn-success" href="
             {{ route('product.addProduct') }}
              ">Tambah
-                    Penjualan</a>
-            </div>
+                        Penjualan</a>
+                </div>
+            @endif
         </div>
 
-        <div class="d-flex justify-content-between align-items-center mb-3">
+        {{-- <div class="d-flex justify-content-between align-items-center mb-3">
             <div class="dropdown me-2">
                 Tampilkan
                 <button type="button" class="btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown"
@@ -32,7 +36,7 @@
                     <li><a class="dropdown-item" href="#">15</a></li>
                     <li><a class="dropdown-item" href="#">20</a></li>
                 </ul>
-            </div>
+            </div> --}}
             <div>
                 <form method="GET">
                     <input type="text" name="search" class="form-control" placeholder="Cari..." value="">
@@ -65,20 +69,16 @@
                         @endif
                         <td class="text-center">{{ $order->created_at }}</td>
                         <td class="text-center">{{ $order->total_price }}</td>
-                        {{-- @if ($order->user->name)
-                            <td class="text-center">{{ $order->user->name }}</td>
-                        @else
-                            <td class="text-center"> </td>
-                        @endif --}}
-                        <td class="text-center"> </td>
+                        <td class="text-center">{{ $order->user->name ?? '' }}</td>
 
                         <td class="text-center">
                             <div class="d-grid gap-4 d-md-flex justify-content-md-end">
-                                <button type="button" class="btn btn-warning" data-bs-toggle="modal"
-                                    data-bs-target="#modalDetail1">Lihat</button>
-                                <button class="btn btn-primary" type="button">
-                                    <a href="#" class="text-white">Unduh Bukti</a>
-                                </button>
+                                <a href="{{ route('order.invoice', $order->id) }}" class="btn btn-warning">
+                                    Lihat
+                                </a>
+                                <a href="{{ route('order.pdf', $order->id) }}" class="btn btn-primary">
+                                    Unduh Bukti
+                                </a>
                             </div>
                         </td>
                     </tr>
@@ -88,16 +88,14 @@
 
         <div class="d-flex justify-content-between align-items-center">
             <div>
-                Menampilkan 1 hingga 10 dari 100 entri
+                Menampilkan {{ $orders->firstItem() }} hingga {{ $orders->lastItem() }} dari {{ $orders->total() }} entri
             </div>
             <div>
                 <nav aria-label="Page navigation example">
                     <ul class="pagination">
-                        <li class="page-item"><a class="page-link" href="#">Previous</a></li>
-                        <li class="page-item"><a class="page-link" href="#">1</a></li>
-                        <li class="page-item"><a class="page-link" href="#">2</a></li>
-                        <li class="page-item"><a class="page-link" href="#">3</a></li>
-                        <li class="page-item"><a class="page-link" href="#">Next</a></li>
+                        {{-- <div class="mt-4 flex justify-center "> --}}
+                            {{ $orders->links() }}
+                        {{-- </div> --}}
                     </ul>
                 </nav>
             </div>

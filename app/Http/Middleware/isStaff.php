@@ -15,8 +15,8 @@ class isStaff
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (auth()->user()->role !== 'staff') {
-            return redirect()->route('home')->with('error', 'You do not have permission to access this page.');
+        if (auth()->check() && auth()->user()->role !== 'staff') {
+            return redirect()->route('dashboard')->with('error', 'You do not have permission to access this page.');
         }
 
         return $next($request);

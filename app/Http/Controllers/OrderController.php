@@ -5,7 +5,9 @@ use App\Models\Product;
 use App\Models\Order;
 use App\Models\DetailOrder;
 use App\Models\Member;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class OrderController extends Controller
 {
@@ -52,6 +54,11 @@ class OrderController extends Controller
     }
 
 
+    public function export()
+    {
+        return Excel::download(new OrdersExport, 'orders.xlsx');
+    }   
+
     /**
      * Show the form for creating a new resource.
      */
@@ -66,47 +73,51 @@ class OrderController extends Controller
     public function store(Request $request)
     {
         $isPointUse = $request->usePoint === 'true';
-        $ordersData = json_decode($request->orders, true); // perbaikan di sini!
+        $ordersData = json_decode($request->orders, true); 
         $phone = $request->phone;
-        $grandTotal = (int) $request->grand_total;
+        $grandTotalRaw = (int) $request->grand_total;
         $totalPayment = (int) $request->total_payment;
         
     
         $member = Member::where('no_telp', $phone)->first();
         $poinUsed = $member ? $member->poin : 0;
-    
+
         $member_status = $request->member;  
+        // dd($member_status, $phone);
+        $grandTotal = $grandTotalRaw;
+
         if ($member_status === 'member') {
-            if (!$member) {
-                // Buat member baru
+            if ($member === null) {
                 $member = Member::create([
                     'name' => $request->member_name,
                     'no_telp' => $phone,
-                    'poin' => $grandTotal * 0.10,
+                    'poin' => $grandTotalRaw * 0.10,
                 ]);
             } else {
-                // Member sudah ada, update poin
                 if ($isPointUse) {
                     $grandTotal -= $member->poin;
-                    $member->poin = $grandTotal * 0.10;
+                    $member->poin = $grandTotalRaw * 0.10;
                 } else {
-                    $member->poin += $grandTotal * 0.10;
+                    $member->poin += $grandTotalRaw * 0.10;
                 }
                 $member->save();
             }
         }
+
+        $userID = auth()->user()->id;
     
-        // Simpan order
         $order = Order::create([
-            'member_id' => $member->id ?? 0,
-            'staff_id' => 1, // Ganti jika ada sistem auth
-            'total_price' => $grandTotal,
+            'member_id' => $member->id ?? null,
+            // ganti kalo udah ada auth
+            'staff_id' => $userID, 
+            'total_price' => $grandTotal === 0 ? $grandTotalRaw : $grandTotal,
             'total_pay' => $totalPayment,
-            'change' => $totalPayment - $grandTotal,
-            'poinUse' => $isPointUse ? $poinUsed : 0,
+            'total_return' => $totalPayment - $grandTotal,
+            'poin' => $isPointUse ? $poinUsed : 0,
         ]);
+
+        // dd($);
     
-        // Simpan detail order
         foreach ($ordersData as $orderItem) {
             DetailOrder::create([
                 'order_id' => $order->id,
@@ -114,8 +125,7 @@ class OrderController extends Controller
                 'quantity' => $orderItem['quantity'],
                 'subtotal' => $orderItem['subtotal'],
             ]);
-    
-            // Update stok produk
+
             $product = Product::find($orderItem['id']);
             if ($product) {
                 $product->stock -= $orderItem['quantity'];
@@ -130,7 +140,21 @@ class OrderController extends Controller
         ]);
     }
     
+    public function invoice($id)
+    {
+        $order = Order::findOrFail($id);
+        $staff = User::findOrFail($order->staff_id); 
+        $member = $order->member;
+        $detailOrders = $order->detailOrder;
+        return view('order.invoice', compact('order', 'member', 'detailOrders', 'staff'));
+    }
 
+    // public function pdf($id) {
+    //     $order = Order::findOrFail($id);
+    //     $member = $order->member;
+    //     $detailOrders = $order->detailOrder;
+    //     return view('order.downloadInvoice', compact('order', 'member', 'detailOrders'));
+    // }
 
     /**
      * Display the specified resource.
@@ -161,6 +185,20 @@ class OrderController extends Controller
      */
     public function destroy(Order $order)
     {
+       
         //
+    }
+    public function exportPDF($id) {
+        $order = Order::findOrFail($id);
+        $member = $order->member;
+        $detailOrders = $order->detailOrder;
+    
+        $pdf = PDF::loadView('order.downloadInvoice', compact('order', 'member', 'detailOrders'));
+        return $pdf->download('invoice_order_' . $order->id . '.pdf');
+    }
+
+    public function exportExcel($id) {
+        $order = Order::findOrFail($id);
+        return Excel::download(new OrderExport($order), 'order_' . $order->id . '.xlsx');
     }
 }

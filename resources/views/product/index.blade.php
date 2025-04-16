@@ -5,20 +5,24 @@
 
 @section('content')
     <div class="container m-4 mr-">
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <div>
-                <a class="btn btn-primary" href="{{ route('product.create') }}">Tambah Product</a>
+        @if (auth()->check() && auth()->user()->role === 'admin')
+            <div class="d-flex justify-content-between align-items-center mb-">
+                <div>
+                    <a class="btn btn-primary" href="{{ route('product.create') }}">Tambah Product</a>
+                </div>
             </div>
-        </div>
+        @endif
         <table class="table">
             <thead>
                 <tr>
                     <th scope="col" class="text-center">#</th>
-                    <th scope="col" class="text-center"></th>
+                    <th scope="col" class="text-center">foto Produk</th>
                     <th scope="col" class="text-center">Nama Product</th>
                     <th scope="col" class="text-center">Harga</th>
                     <th scope="col" class="text-center">Stok</th>
-                    <th scope="col" class="text-center">Aksi</th>
+                    @if (auth()->check() && auth()->user()->role === 'admin')
+                        <th scope="col" class="text-center">Aksi</th>
+                    @endif
                 </tr>
             </thead>
             <tbody>
@@ -33,34 +37,45 @@
                         <td class="text-center">{{ $product->name }}</td>
                         <td class="text-center">Rp. {{ number_format($product->price, 0, ',', '.') }}</td>
                         <td class="text-center">{{ $product->stock }}</td>
-                        <td class="text-center">
-                            <div class="d-grid gap-4 d-md-flex justify-content-md-end">
-                                <a
-                                    href="
+                        @if (auth()->check() && auth()->user()->role === 'admin')
+                            <td class="text-center">
+                                <div class="d-grid gap-4 d-md-flex justify-content-md-end">
+                                    <a
+                                        href="
                         {{ route('product.edit', $product->id) }}
                         "><button
-                                        type="button" class="btn btn-warning">Edit</button></a>
-                                <button class="btn btn-primary btn-update-stock" data-bs-toggle="modal"
-                                    data    -bs-target="#updateStockModal" data-id={{ $product->id }}
-                                    data-name={{ $product->name }} data-stock={{ $product->stock }}>
-                                    Update Stok
-                                </button>
-                                <form action="{{ route('product.destroy', $product->id) }}" method="POST">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button class="btn btn-danger" type="submit">Hapus</button>
-                                </form>
-                            </div>
-                        </td>
+                                            type="button" class="btn btn-warning">Edit</button></a>
+                                    <button class="btn btn-primary btn-update-stock" data-bs-toggle="modal" data
+                                        -bs-target="#updateStockModal" data-id={{ $product->id }}
+                                        data-name={{ $product->name }} data-stock={{ $product->stock }}>
+                                        Update Stok
+                                    </button>
+                                    <form action="{{ route('product.destroy', $product->id) }}" method="POST">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button class="btn btn-danger" type="submit">Hapus</button>
+                                    </form>
+                                </div>
+                            </td>
+                        @endif
                     </tr>
                     @endforeach
             </tbody>
         </table>
-        <nav aria-label="Page navigation example flex">
-            <ul class="pagination navigation">
-                {{ $products->links() }}
-            </ul>
-        </nav>
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                Menampilkan {{ $products->firstItem() }} hingga {{ $products->lastItem() }} dari {{ $products->total() }} entri
+            </div>
+            <div>
+                <nav aria-label="Page navigation example">
+                    <ul class="pagination">
+                        {{-- <div class="mt-4 flex justify-center "> --}}
+                            {{ $products->links() }}
+                        {{-- </div> --}}
+                    </ul>
+                </nav>
+            </div>
+        </div>
     </div>
 
     <!-- Modal Update Stok -->

@@ -9,7 +9,7 @@ class Member extends Model
     protected $fillable = [
         'name',
         'address',
-        'phone',
+        'no_telp',
         'poin',
     ];
 
