@@ -38,6 +38,7 @@
         {{ route('order.review') }}
          " method="POST" id="cartForm">
                 @csrf
+                
                 <input type="hidden" name="cart_data" id="cartData">
                 <button type="submit" class="btn btn-primary">Selanjutnya</button>
             </form>

@@ -7,7 +7,11 @@ use App\Models\DetailOrder;
 use App\Models\Member;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\OrderExport;
 
 class OrderController extends Controller
 {
@@ -16,19 +20,49 @@ class OrderController extends Controller
      */
     public function index(Request $request)
     {
-        $query = $request->input('query');
-
+        $query = $request->input('search'); 
+    
         if ($query) {
-            $orders = Order::where('member_id', 'LIKE', "%{$query}%")
-                ->orWhere('total_price', 'LIKE', "%{$query}%")
-                ->orWhere('status', 'LIKE', "%{$query}%")
+            $orders = Order::with('member', 'user')
+                ->where(function ($q) use ($query) {
+                    $q->whereHas('member', function ($subQuery) use ($query) {
+                        $subQuery->where('name', 'LIKE', "%{$query}%");
+                    })
+                    ->orWhere('total_price', 'LIKE', "%{$query}%")
+                    ->orWhereHas('user', function ($subQuery) use ($query) {
+                        $subQuery->where('name', 'LIKE', "%{$query}%");
+                    });
+                })
                 ->paginate(5);
         } else {
             $orders = Order::with('member', 'user')->paginate(5);
         }
-
+    
         return view('order.index', compact('orders'));
     }
+    
+    public function dashboard(Request $request)
+    {
+        $totalOrdersToday = DB::table('orders')
+            ->whereDate('created_at', Carbon::today())
+            ->count();
+    
+        $penjualanPerProduk = DetailOrder::select('products.name', DB::raw('SUM(quantity) as total'))
+            ->join('products', 'products.id', '=', 'detail_orders.product_id')
+            ->groupBy('products.name')
+            ->get();
+    
+            // $ordersPerMonth = DB::table('orders')
+            //     ->selectRaw("DATE_FORMAT(created_at, '%M') as month, COUNT(*) as total")
+            //     ->whereBetween('created_at', [Carbon::now()->subMonths(11)->startOfMonth(), Carbon::now()->endOfMonth()])
+            //     ->groupByRaw("MONTH(created_at)")
+            //     ->orderByRaw("MIN(created_at)")
+            //     ->get();
+    
+        return view('dashboard', compact('totalOrdersToday', 'penjualanPerProduk'));
+    }
+    
+
 
     public function review(Request $request)
     {
@@ -54,11 +88,6 @@ class OrderController extends Controller
     }
 
 
-    public function export()
-    {
-        return Excel::download(new OrdersExport, 'orders.xlsx');
-    }   
-
     /**
      * Show the form for creating a new resource.
      */
@@ -80,7 +109,7 @@ class OrderController extends Controller
         
     
         $member = Member::where('no_telp', $phone)->first();
-        $poinUsed = $member ? $member->poin : 0;
+        // $poinUsed = $member ? $member->poin : 0;
 
         $member_status = $request->member;  
         // dd($member_status, $phone);
@@ -103,6 +132,8 @@ class OrderController extends Controller
                 $member->save();
             }
         }
+
+        $poinUsed = $grandTotalRaw - $grandTotal;
 
         $userID = auth()->user()->id;
     
@@ -185,9 +216,9 @@ class OrderController extends Controller
      */
     public function destroy(Order $order)
     {
-       
         //
     }
+
     public function exportPDF($id) {
         $order = Order::findOrFail($id);
         $member = $order->member;
@@ -196,6 +227,11 @@ class OrderController extends Controller
         $pdf = PDF::loadView('order.downloadInvoice', compact('order', 'member', 'detailOrders'));
         return $pdf->download('invoice_order_' . $order->id . '.pdf');
     }
+
+    public function export()
+    {
+        return Excel::download(new OrderExport, 'orders.xlsx'); 
+    }   
 
     public function exportExcel($id) {
         $order = Order::findOrFail($id);

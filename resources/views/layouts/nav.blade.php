@@ -25,10 +25,10 @@
                     @csrf
                     <button type="submit"  style="all: unset; " >
                         <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link"
-                            href="{{ route('user.index') }}" aria-expanded="false">
+                             aria-expanded="false">
                             <i class="bi bi-box-arrow-in-right"></i>
                         <span class="hide-menu">Logout</span>
-                        <a></li>
+                        <a><
                     </button>
                 </form>
             </ul>

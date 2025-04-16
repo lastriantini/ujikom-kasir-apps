@@ -18,7 +18,7 @@ class MemberController extends Controller
         $phone = $request->phone;
         // dd($phone);
         $orders = json_decode($request->cart_data, true);
-        $totalPayment = $request->total_bayar;
+        $totalPayment = $request->total_payment   ;
         $member_status = $request->member;  
 
         // dd($member_status);

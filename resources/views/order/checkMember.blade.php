@@ -40,7 +40,7 @@
                         </tbody>
                     </table>
                     <h5 class="fw-bold">Total Harga: <span class="float-end">Rp. {{ number_format($subTotal, 0, ',', '.') }}</span></h5>
-                    <h5 class="fw-bold">Total Bayar: <span class="float-end">Rp. {{ number_format($grandTotal, 0, ',', '.') }}</span></h5>
+                    <h5 class="fw-bold">Total Bayar: <span class="float-end">Rp. {{ number_format($totalPayment, 0, ',', '.') }}</span></h5>
                 </div>
             </div>
         </div>

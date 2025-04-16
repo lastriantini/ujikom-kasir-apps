@@ -60,10 +60,10 @@
 
 <body>
     <h1>Invoice - #{{ $order->id }}</h1>
-    <p>Member Name : {{ $member->name }}</p>
-    <p>No. HP : {{ $member->no_telp }}</p>
-    <p>Bergabung Sejak : {{ $member->created_at }}</p>
-    <p>Point Member : {{ $member->poin }}</p>
+    <p>Member Name : {{ $member->name ?? " - " }}</p>
+    <p>No. HP : {{ $member->no_telp ?? " - " }}</p>
+    <p>Bergabung Sejak : {{ $member->created_at ?? " - " }}</p>
+    <p>Point Member : {{ $member->poin ?? " - " }}</p>
     <table>
         <thead>
             <tr>
@@ -86,7 +86,7 @@
         <tfoot>
             <tr>
                 <th colspan="3">Poin Terpakai</th>
-                <td>{{ $member->poin }}</td>
+                <td>{{ $order->poin ?? "0" }}</td>
             </tr>
             <tr>
                 <th colspan="3">Tunai</th>

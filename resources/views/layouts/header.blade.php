@@ -11,17 +11,18 @@
                         <b class="logo-icon">
                             <!--You can put here icon as well // <i class="wi wi-sunset"></i> //-->
                             <!-- Dark Logo icon -->
-                            <img src="{{ asset('assets/images/logo-icon.png') }}" alt="homepage" class="dark-logo" />
+                            {{-- <img src="{{ asset('assets/images/logo-icon.png') }}" alt="homepage" class="dark-logo" /> --}}
                             <!-- Light Logo icon -->
-                            <img src="{{ asset('assets/images/logo-light-icon.png') }}" alt="homepage" class="light-logo" />
+                            {{-- <img src="{{ asset('assets/images/logo-light-icon.png') }}" alt="homepage" class="light-logo" /> --}}
                         </b>
                         <!--End Logo icon -->
                         <!-- Logo text -->
-                        <span class="logo-text">
+                        <span class="logo-text" style="display: flex">
                             <!-- dark Logo text -->
-                            <img src="{{ asset('assets/images/logo-text.png') }}" alt="homepage" class="dark-logo" />
+                            <img src="{{ asset('assets/images/book-icon.jpg') }}" alt="homepage" class="dark-logo" style="width: 5vw; height: 6vw; margin-left: -2vw" />
                             <!-- Light Logo text -->
-                            <img src="{{ asset('assets/images/logo-light-text.png') }}" class="light-logo" alt="homepage" />
+                            <h3 style="margin-top: 2.1vw; margin-left: 0.5vw; color: gray;">TokoBuku</h3>
+                            {{-- <img src="{{ asset('assets/images/logo-light-text.png') }}" class="light-logo" alt="homepage" /> --}}
                         </span>
                     </a>
                     <!-- ============================================================== -->
@@ -42,13 +43,13 @@
                         <!-- ============================================================== -->
                         <!-- Search -->
                         <!-- ============================================================== -->
-                        <li class="nav-item search-box"> <a class="nav-link waves-effect waves-dark"
+                        {{-- <li class="nav-item search-box"> <a class="nav-link waves-effect waves-dark"
                                 href="javascript:void(0)"><i class="mdi mdi-magnify me-1"></i> <span class="font-16">Search</span></a>
                             <form class="app-search position-absolute">
                                 <input type="text" class="form-control" placeholder="Search &amp; enter"> <a
                                     class="srh-btn"><i class="mdi mdi-window-close"></i></a>
                             </form>
-                        </li>
+                        </li> --}}
                     </ul>
                     <!-- ============================================================== -->
                     <!-- Right side toggle and nav items -->
@@ -57,7 +58,7 @@
                         <!-- ============================================================== -->
                         <!-- User profile and search -->
                         <!-- ============================================================== -->
-                        <li class="nav-item dropdown">
+                        {{-- <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle text-muted waves-effect waves-dark pro-pic" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 <img src="../assets/images/users/profile.png" alt="user" class="rounded-circle" width="31">
                             </a>
@@ -67,7 +68,7 @@
                                 <a class="dropdown-item" href="javascript:void(0)"><i class="mdi mdi-logout m-r-5 m-l-5"></i>
                                     Logout</a>
                             </ul>
-                        </li>
+                        </li> --}}
                         <!-- ============================================================== -->
                         <!-- User profile and search -->
                         <!-- ============================================================== -->

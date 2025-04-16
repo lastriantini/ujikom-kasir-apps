@@ -45,11 +45,12 @@
                         {{ route('product.edit', $product->id) }}
                         "><button
                                             type="button" class="btn btn-warning">Edit</button></a>
-                                    <button class="btn btn-primary btn-update-stock" data-bs-toggle="modal" data
-                                        -bs-target="#updateStockModal" data-id={{ $product->id }}
-                                        data-name={{ $product->name }} data-stock={{ $product->stock }}>
+                                    <button class="btn btn-primary btn-update-stock" data-bs-toggle="modal"
+                                        data-bs-target="#updateStockModal" data-id="{{ $product->id }}"
+                                        data-name="{{ $product->name }}" data-stock="{{ $product->stock }}">
                                         Update Stok
                                     </button>
+
                                     <form action="{{ route('product.destroy', $product->id) }}" method="POST">
                                         @csrf
                                         @method('DELETE')
@@ -64,13 +65,14 @@
         </table>
         <div class="d-flex justify-content-between align-items-center">
             <div>
-                Menampilkan {{ $products->firstItem() }} hingga {{ $products->lastItem() }} dari {{ $products->total() }} entri
+                Menampilkan {{ $products->firstItem() }} hingga {{ $products->lastItem() }} dari {{ $products->total() }}
+                entri
             </div>
             <div>
                 <nav aria-label="Page navigation example">
                     <ul class="pagination">
                         {{-- <div class="mt-4 flex justify-center "> --}}
-                            {{ $products->links() }}
+                        {{ $products->links() }}
                         {{-- </div> --}}
                     </ul>
                 </nav>
@@ -111,20 +113,25 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            let updateStockModal = document.getElementById("updateStockModal");
-            let updateStockForm = document.getElementById("updateStockForm");
+            const modal = document.getElementById("updateStockModal");
+            const form = document.getElementById("updateStockForm");
 
-            updateStockModal.addEventListener("show.bs.modal", function(event) {
-                let button = event.relatedTarget;
-                let productId = button.getAttribute("data-id");
-                let productName = button.getAttribute("data-name");
-                let productStock = button.getAttribute("data-stock");
+            const modalInstance = new bootstrap.Modal(modal);
 
+            document.querySelectorAll(".btn-update-stock").forEach(button => {
+                button.addEventListener("click", function() {
+                    const id = this.dataset.id;
+                    const name = this.dataset.name;
+                    const stock = this.dataset.stock;
 
-                document.getElementById("product_id").value = productId;
-                document.getElementById("product_name").value = productName;
-                document.getElementById("stock").value = productStock;
-                updateStockForm.action = `/product/${productId}/edit-stock`;
+                    document.getElementById("product_id").value = id;
+                    document.getElementById("product_name").value = name;
+                    document.getElementById("stock").value = stock;
+
+                    form.action = `/product/${id}/edit-stock`;
+
+                    modalInstance.show();
+                });
             });
         });
     </script>

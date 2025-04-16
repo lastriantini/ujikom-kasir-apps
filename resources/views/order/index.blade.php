@@ -9,15 +9,13 @@
             @if (auth()->check() && auth()->user()->role === 'admin')
                 <div>
                     <button class="btn btn-primary">
-                        <a href="#" class="text-white">Export Penjualan (.xlsx)</a>
+                        <a href="{{ route('order.export.excel') }}" class="text-white">Export Penjualan (.xlsx)</a>
                     </button>
                 </div>
             @endif
             @if (auth()->check() && auth()->user()->role === 'staff')
                 <div class="ml-auto">
-                    <a class="btn btn-success" href="
-            {{ route('product.addProduct') }}
-             ">Tambah
+                    <a class="btn btn-success" href="{{ route('product.addProduct') }}">Tambah
                         Penjualan</a>
                 </div>
             @endif
@@ -38,8 +36,8 @@
                 </ul>
             </div> --}}
             <div>
-                <form method="GET">
-                    <input type="text" name="search" class="form-control" placeholder="Cari..." value="">
+                <form action="{{ route('order.index') }}" method="GET" >
+                    <input type="text" name="search" class="form-control" placeholder="Cari..." value="{{ request('query') }}">
                 </form>
             </div>
         </div>
@@ -65,7 +63,7 @@
                         @if ($order->member)
                             <td class="text-center">{{ $order->member->name }}</td>
                         @else
-                            <td class="text-center"> </td>
+                            <td class="text-center"> Bukan Member </td>
                         @endif
                         <td class="text-center">{{ $order->created_at }}</td>
                         <td class="text-center">{{ $order->total_price }}</td>

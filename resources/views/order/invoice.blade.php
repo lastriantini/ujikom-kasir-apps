@@ -62,7 +62,7 @@
             <div class="col-md-6">
                 <div class="bg-dark text-white p-3 text-center rounded">
                     <h5 class="m-0 text-white">TOTAL PRICE</h5>
-                    <h3 class="fw-bold text-white" id="total_prices">Rp. {{ $order->total_price }}</h3>
+                    <h3 class="fw-bold text-white" id="total_prices">Rp. Rp. {{ number_format($order->total_price, 0, ',', '.') }}</h3>
                 </div>
             </div>
         </div>

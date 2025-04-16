@@ -7,6 +7,7 @@ use App\Http\Controllers\MemberController;
 use App\Http\Controllers\OrderController;
 use App\Models\Member;
 
+
 Route::middleware('guest')->group(function () {
     Route::post('/loginAuth', [UserController::class, 'loginAuth'])->name('loginAuth');
     Route::get('/', function() {
@@ -17,11 +18,11 @@ Route::middleware('guest')->group(function () {
     })->name('home');
 });
 
-
 Route::middleware(['isLogin'])->group(function () {
-    Route::get('/dashboard', function() {
-            return view('dashboard');
-    })->name('dashboard');
+    // Route::get('/dashboard', function() {
+    //         return view('dashboard');
+    // })->name('dashboard');
+    Route::get('/dashboard', [OrderController::class, 'dashboard'])->name('dashboard');
     Route::post('/logout', [UserController::class, 'logout'])->name('logout');
     Route::prefix('product')->group(function(): void {
         Route::get('/data', [ProductController::class, 'index'])->name('product.index');
@@ -40,6 +41,7 @@ Route::middleware('isStaff')->group(function () {
     Route::prefix('order')->name('order.')->group(function(): void {
         Route::get('/create', [OrderController::class, 'create'])->name('create');
         Route::post('/review', [OrderController::class, 'review'])->name('review');
+        // Route::match(['get', 'post'], '/review', [OrderController::class, 'review']);
         Route::get('/checkMember', [MemberController::class, 'checkMember'])->name('checkMember');
         Route::post('/store', [OrderController::class, 'store'])->name('store');
     });

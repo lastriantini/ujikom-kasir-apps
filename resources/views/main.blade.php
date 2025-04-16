@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html dir="ltr" lang="en">
+
 <head>
     @include('layouts.include-header')
 </head>
@@ -23,22 +24,24 @@
                     <div class="col-6">
                         <nav aria-label="breadcrumb">
                             <ol class="breadcrumb mb-0 d-flex align-items-center">
-                           <li class="breadcrumb-item"><a href="{{ route('dashboard') }}" class="link"><i class="mdi mdi-home-outline fs-4"></i></a></li>
-                              <li class="breadcrumb-item active" aria-current="page">@yield('breadcrumb', 'Dashboard')</li>
-                            </ol>   
-                          </nav>
+                                <li class="breadcrumb-item"><a href="{{ route('dashboard') }}" class="link"><i
+                                            class="mdi mdi-home-outline fs-4"></i></a></li>
+                                <li class="breadcrumb-item active" aria-current="page">@yield('breadcrumb', 'Dashboard')</li>
+                            </ol>
+                        </nav>
                         <h1 class="mb-0 fw-bold">@yield('page-title', 'Dashboard')</h1>
                     </div>
 
                 </div>
             </div>
-
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+        
             <div class="container-fluid">
                 @yield('content')
             </div>
         </div>
 
-        
+
 
     </div>
 
